@@ -1,0 +1,94 @@
+*tmux-popup.nvim.txt* Persistent tmux popup terminals for Neovim
+
+==============================================================================
+CONTENTS                                           *tmux-popup.nvim-contents*
+
+1. Introduction                                  |tmux-popup.nvim|
+2. Setup                                         |tmux-popup.nvim-setup|
+3. Commands                                      |tmux-popup.nvim-commands|
+4. Lua API                                       |tmux-popup.nvim-api|
+5. Options                                       |tmux-popup.nvim-options|
+
+==============================================================================
+INTRODUCTION                                      *tmux-popup.nvim*
+
+tmux-popup.nvim opens a real tmux display-popup from Neovim. Closing the popup
+only detaches the tmux client, so the shell keeps running and is reused the
+next time you open it.
+
+Requirements:
+
+- Neovim 0.10+
+- tmux 3.2+
+
+==============================================================================
+SETUP                                             *tmux-popup.nvim-setup*
+>
+  vim.pack.add({
+    { src = "https://github.com/nimbahus/tmux-popup.nvim" },
+  })
+
+  require("tmux_popup").setup({
+    keymap = "<leader>tt",
+  })
+<
+
+==============================================================================
+COMMANDS                                          *tmux-popup.nvim-commands*
+
+:TerminalPopup [dir]                              *:TerminalPopup*
+    Open the persistent popup terminal. If [dir] is given, use that directory.
+
+:TerminalPopupKill [dir]                          *:TerminalPopupKill*
+    Kill the persistent popup terminal. If [dir] is given, use that directory.
+
+Default close keys:
+
+- Ctrl-g
+- F12
+- prefix + d
+- prefix + q
+
+==============================================================================
+LUA API                                           *tmux-popup.nvim-api*
+>
+  require("tmux_popup").open()
+  require("tmux_popup").kill()
+
+  require("tmux_popup").open({
+    name = "git",
+    start_command = "lazygit",
+  })
+<
+
+name creates a separate persistent session. start_command is sent to the
+session's shell only when that session is first created. When the command exits,
+the shell stays open.
+
+==============================================================================
+OPTIONS                                           *tmux-popup.nvim-options*
+>
+  require("tmux_popup").setup({
+    keymap = "<leader>tt",
+    width = "90%",
+    height = "85%",
+    scope = "project", -- "project", "cwd" or "global"
+    theme = "auto",
+    popup_style = nil,
+    border_style = nil,
+  })
+<
+
+If close keys do not reach the popup in your nested tmux setup:
+>
+  require("tmux_popup").setup({
+    outer_close_keys = { "C-g" },
+  })
+<
+
+Run:
+>
+  :checkhealth tmux_popup
+<
+
+vim:tw=78:ts=8:noet:ft=help:norl:
